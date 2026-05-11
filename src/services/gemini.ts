@@ -1,6 +1,9 @@
 import { GoogleGenAI } from "@google/genai";
 
-const apiKey = process.env.GEMINI_API_KEY || (import.meta as any).env?.VITE_GEMINI_API_KEY;
+const apiKey = 
+  (typeof process !== 'undefined' && process.env?.GEMINI_API_KEY) || 
+  (import.meta as any).env?.VITE_GEMINI_API_KEY || 
+  (import.meta as any).env?.GEMINI_API_KEY;
 
 if (!apiKey && typeof window !== 'undefined') {
   console.error("CRITICAL ERROR: GEMINI_API_KEY is missing! The AI will not respond. Please set GEMINI_API_KEY or VITE_GEMINI_API_KEY.");
