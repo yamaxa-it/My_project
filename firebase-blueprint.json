@@ -1,0 +1,64 @@
+{
+  "entities": {
+    "User": {
+      "title": "User Profile",
+      "description": "Stores user profile information and language learning progress.",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "email": { "type": "string" },
+        "displayName": { "type": "string" },
+        "photoURL": { "type": "string" },
+        "englishLevel": { "type": "string", "enum": ["A1", "A2", "B1", "B2", "C1", "C2", "Unknown"] },
+        "germanLevel": { "type": "string", "enum": ["A1", "A2", "B1", "B2", "C1", "C2", "Unknown"] },
+        "goal": { "type": "string" },
+        "studyTimePerDay": { "type": "number" },
+        "onboarded": { "type": "boolean" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["uid", "email"]
+    },
+    "Message": {
+      "title": "Chat Message",
+      "description": "A single message in the conversation between the user and the AI Tutor.",
+      "type": "object",
+      "properties": {
+        "role": { "type": "string", "enum": ["user", "model"] },
+        "content": { "type": "string" },
+        "timestamp": { "type": "string", "format": "date-time" },
+        "attachments": { "type": "array", "items": { "type": "string" } }
+      },
+      "required": ["role", "content", "timestamp"]
+    },
+    "Task": {
+      "title": "Daily Task",
+      "description": "An assignment or exercise for the user to complete.",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string" },
+        "description": { "type": "string" },
+        "status": { "type": "string", "enum": ["pending", "completed", "verified"] },
+        "type": { "type": "string", "enum": ["diagnostic", "grammar", "vocabulary", "listening", "speaking"] },
+        "dueDate": { "type": "string", "format": "date-time" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "completedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["title", "status", "type", "createdAt"]
+    }
+  },
+  "firestore": {
+    "users/{userId}": {
+      "schema": "User",
+      "description": "Individual user profiles."
+    },
+    "users/{userId}/chats/{chatId}/messages/{messageId}": {
+      "schema": "Message",
+      "description": "History of messages within a specific chat session."
+    },
+    "users/{userId}/tasks/{taskId}": {
+      "schema": "Task",
+      "description": "Daily tasks assigned to the user."
+    }
+  }
+}

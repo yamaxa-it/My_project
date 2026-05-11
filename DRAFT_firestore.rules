@@ -1,0 +1,80 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // 0. Default Deny
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // --- Helpers ---
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    // --- User Profile ---
+    match /users/{userId} {
+      allow get: if isOwner(userId);
+      allow create: if isOwner(userId) && isValidUser(incoming());
+      allow update: if isOwner(userId) && isValidUser(incoming()) && (
+        incoming().diff(existing()).affectedKeys().hasOnly(['englishLevel', 'germanLevel', 'goal', 'studyTimePerDay', 'onboarded', 'updatedAt', 'displayName', 'photoURL'])
+      );
+
+      function isValidUser(data) {
+        return data.keys().hasAll(['uid', 'email'])
+          && data.uid == request.auth.uid
+          && data.email is string
+          && (data.get('englishLevel', 'Unknown') in ['A1', 'A2', 'B1', 'B2', 'C1', 'C2', 'Unknown'])
+          && (data.get('germanLevel', 'Unknown') in ['A1', 'A2', 'B1', 'B2', 'C1', 'C2', 'Unknown'])
+          && (data.get('onboarded', false) is bool);
+      }
+
+      // --- Chats ---
+      match /chats/{chatId}/messages/{messageId} {
+        allow list: if isOwner(userId);
+        allow create: if isOwner(userId) && isValidMessage(incoming());
+        // Messages are usually immutable in this app
+        
+        function isValidMessage(data) {
+          return data.keys().hasAll(['role', 'content', 'timestamp'])
+            && data.role in ['user', 'model']
+            && data.content is string && data.content.size() <= 10000;
+        }
+      }
+
+      // --- Tasks ---
+      match /tasks/{taskId} {
+        allow list: if isOwner(userId);
+        allow get: if isOwner(userId);
+        allow create: if isOwner(userId) && isValidTask(incoming());
+        allow update: if isOwner(userId) && isValidTask(incoming()) && (
+          // Allow updating status and completedAt
+          incoming().diff(existing()).affectedKeys().hasOnly(['status', 'completedAt'])
+        );
+        allow delete: if isOwner(userId);
+
+        function isValidTask(data) {
+          return data.keys().hasAll(['title', 'status', 'type', 'createdAt'])
+            && data.title is string && data.title.size() <= 200
+            && data.status in ['pending', 'completed', 'verified']
+            && data.type in ['diagnostic', 'grammar', 'vocabulary', 'listening', 'speaking'];
+        }
+      }
+    }
+  }
+}

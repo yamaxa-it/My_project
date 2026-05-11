@@ -1,0 +1,93 @@
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
+
+@theme {
+  --font-sans: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+}
+
+@layer base {
+  body {
+    @apply bg-[#030304] text-white m-0 min-h-screen w-full font-sans antialiased selection:bg-purple-500/30;
+  }
+}
+
+@layer components {
+  .app-container {
+    @apply h-screen w-full overflow-hidden flex bg-transparent relative z-10;
+  }
+
+  .glass-panel {
+    @apply bg-white/[0.03] border border-white/10 backdrop-blur-2xl rounded-[2.5rem] shadow-[0_8px_32px_0_rgba(0,0,0,0.8)];
+  }
+  
+  .glass-card {
+    @apply bg-white/[0.02] border border-white/[0.05] backdrop-blur-md rounded-2xl hover:bg-white/[0.04] hover:border-white/10 transition-all duration-300;
+  }
+
+  .pill {
+    @apply px-4 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-[0.2em] bg-white/5 border border-white/10 whitespace-nowrap;
+  }
+
+  .chat-bubble-ai {
+    @apply bg-white/[0.05] border border-white/10 rounded-3xl rounded-tl-none backdrop-blur-md self-start shadow-xl;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 4px;
+  }
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+  }
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.2);
+  }
+}
+
+/* Background Animation */
+.liquid-bg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 0;
+  background: #030304;
+  overflow: hidden;
+}
+
+.liquid-blob {
+  position: absolute;
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(circle, rgba(139, 92, 246, 0.15) 0%, transparent 70%);
+  filter: blur(80px);
+  border-radius: 50%;
+  animation: move 20s infinite alternate;
+}
+
+.liquid-blob:nth-child(2) {
+  background: radial-gradient(circle, rgba(59, 130, 246, 0.1) 0%, transparent 70%);
+  width: 800px;
+  height: 800px;
+  animation-delay: -5s;
+  animation-duration: 25s;
+}
+
+@keyframes move {
+  from { transform: translate(-10%, -10%) scale(1); }
+  to { transform: translate(20%, 20%) scale(1.2); }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}

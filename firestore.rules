@@ -1,0 +1,81 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // 0. Default Deny
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // --- Helpers ---
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    // Connection Test
+    match /test/connection {
+      allow get: if true;
+    }
+
+    // --- User Profile ---
+    match /users/{userId} {
+      allow get: if isOwner(userId) && isValidId(userId);
+      allow create: if isOwner(userId) && isValidId(userId) && isValidUser(incoming());
+      allow update: if isOwner(userId) && isValidId(userId) && isValidUser(incoming()) && (
+        incoming().diff(existing()).affectedKeys().hasOnly(['englishLevel', 'germanLevel', 'goal', 'studyTimePerDay', 'onboarded', 'updatedAt', 'displayName', 'photoURL', 'name', 'age'])
+      );
+
+      function isValidUser(data) {
+        return data.get('uid', '') == request.auth.uid
+          && data.get('email', '') is string
+          && (data.get('englishLevel', 'Unknown') in ['A1', 'A2', 'B1', 'B2', 'C1', 'C2', 'Unknown', '...'])
+          && (data.get('germanLevel', 'Unknown') in ['A1', 'A2', 'B1', 'B2', 'C1', 'C2', 'Unknown', '...'])
+          && (data.get('onboarded', false) is bool)
+          && (data.get('age', 0) is int);
+      }
+
+      // --- Messages ---
+      match /chats/{chatId}/messages/{messageId} {
+        allow list: if isOwner(userId);
+        allow create: if isOwner(userId) && isValidId(chatId) && isValidId(messageId) && isValidMessage(incoming());
+        
+        function isValidMessage(data) {
+          return data.role in ['user', 'model']
+            && data.content is string && data.content.size() <= 20000;
+        }
+      }
+
+      // --- Tasks ---
+      match /tasks/{taskId} {
+        allow list: if isOwner(userId);
+        allow get: if isOwner(userId) && isValidId(taskId);
+        allow create: if isOwner(userId) && isValidId(taskId) && isValidTask(incoming());
+        allow update: if isOwner(userId) && isValidId(taskId) && isValidTask(incoming()) && (
+          incoming().diff(existing()).affectedKeys().hasOnly(['status', 'completedAt'])
+        );
+        allow delete: if isOwner(userId) && isValidId(taskId);
+
+        function isValidTask(data) {
+          return data.status in ['pending', 'completed', 'verified']
+            && data.type in ['diagnostic', 'grammar', 'vocabulary', 'listening', 'speaking']
+            && data.title is string && data.title.size() <= 200;
+        }
+      }
+    }
+  }
+}
