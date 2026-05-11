@@ -148,7 +148,7 @@ export default function Dashboard({ user }: DashboardProps) {
   };
 
   return (
-    <div className="flex flex-col md:flex-row h-screen w-full p-4 md:p-6 gap-4 md:gap-6 overflow-hidden relative">
+    <div className="flex flex-col md:flex-row h-screen w-full p-4 md:p-8 gap-4 md:gap-8 overflow-hidden relative">
       
       <AnimatePresence>
         {showOnboarding && (
@@ -166,65 +166,39 @@ export default function Dashboard({ user }: DashboardProps) {
         lang={lang}
       />
 
-      <main className="flex-1 flex flex-col gap-4 md:gap-6 overflow-hidden mt-2 md:mt-0">
-        <header className="flex flex-col md:flex-row items-start md:items-center justify-between px-2 gap-4 shrink-0">
-          <div className="flex flex-col">
-            <span className="text-[9px] md:text-[10px] text-white/50 font-mono tracking-wider uppercase">{t.activeSession}: Pedagogy v1.2</span>
-            <h1 className="text-xl md:text-2xl font-light tracking-tight">{t.welcome} <span className="font-bold text-purple-400">{t.professor}</span></h1>
+      <main className="flex-1 flex flex-col gap-6 md:gap-10 overflow-hidden mt-4 md:mt-0">
+        <header className="flex flex-col md:flex-row items-start md:items-center justify-between px-4 gap-6 shrink-0">
+          <div className="flex flex-col gap-2">
+            <div className="flex items-center gap-3">
+              <span className="px-3 py-1 bg-purple-500/10 border border-purple-500/20 rounded-full text-[10px] font-black tracking-[0.3em] text-purple-400 uppercase">
+                CORE v2.0
+              </span>
+              <div className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse shadow-[0_0_10px_rgba(34,197,94,0.5)]" />
+              <span className="text-[10px] text-white/40 font-mono tracking-widest">{t.activeSession}</span>
+            </div>
+            <h1 className="text-3xl md:text-5xl font-extrabold tracking-tighter leading-tight text-white">
+              {t.welcome} <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-blue-400">{t.professor}</span>
+            </h1>
           </div>
 
-          <div className="flex flex-wrap gap-3 md:gap-4 items-center">
+          <div className="flex flex-wrap gap-4 items-center">
             <motion.div 
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={async () => {
-                const levels = ['A1', 'A2', 'B1', 'B2', 'C1', 'C2'];
-                const currentIndex = levels.indexOf(profile?.englishLevel || 'A1');
-                const nextLevel = levels[(currentIndex + 1) % levels.length];
-                const userRef = doc(db, 'users', user.uid);
-                await updateDoc(userRef, { englishLevel: nextLevel });
-                setProfile((p: any) => ({ ...p, englishLevel: nextLevel }));
-              }}
-              className="pill flex items-center gap-2 group cursor-pointer border-blue-500/20 active:bg-blue-500/10"
-              title="Click to toggle English level"
+              whileHover={{ y: -2, scale: 1.02 }}
+              className="flex items-center gap-4 bg-white/[0.03] border border-white/10 p-2 pr-6 rounded-[2rem] backdrop-blur-3xl group transition-all hover:bg-white/[0.05]"
             >
-              <span className="text-blue-400 font-bold">ENG</span>
-              <span className="text-white/80">{profile?.englishLevel || 'A1'}</span>
-              <GraduationCap className="w-3 h-3 text-blue-500/50 group-hover:text-blue-400 transition-colors" />
-            </motion.div>
-
-            <motion.div 
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={async () => {
-                const levels = ['A1', 'A2', 'B1', 'B2', 'C1', 'C2'];
-                const currentIndex = levels.indexOf(profile?.germanLevel || 'A1');
-                const nextLevel = levels[(currentIndex + 1) % levels.length];
-                const userRef = doc(db, 'users', user.uid);
-                await updateDoc(userRef, { germanLevel: nextLevel });
-                setProfile((p: any) => ({ ...p, germanLevel: nextLevel }));
-              }}
-              className="pill flex items-center gap-2 group cursor-pointer border-purple-500/20 active:bg-purple-500/10"
-              title="Click to toggle German level"
-            >
-              <span className="text-purple-400 font-bold">GER</span>
-              <span className="text-white/80">{profile?.germanLevel || 'A1'}</span>
-              <GraduationCap className="w-3 h-3 text-purple-500/50 group-hover:text-purple-400 transition-colors" />
-            </motion.div>
-
-            <div className="flex items-center gap-3 bg-white/5 border border-white/10 pl-1 pr-4 py-1 rounded-full text-xs font-medium shadow-lg hover:bg-white/10 transition-colors">
-              <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-purple-500 to-blue-500 flex items-center justify-center text-[10px] font-bold">
+              <div className="w-12 h-12 rounded-full bg-gradient-to-tr from-purple-600 to-indigo-600 flex items-center justify-center text-sm font-black shadow-2xl relative overflow-hidden group-hover:scale-105 transition-transform">
                 {profile?.name?.charAt(0) || 'U'}
+                <div className="absolute inset-0 bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity" />
               </div>
               <div className="flex flex-col">
-                <span className="text-white font-bold">{profile?.name || 'User'}</span>
-                <span className="text-[9px] text-white/40 leading-none">{user.email}</span>
+                <span className="text-sm font-black tracking-tight text-white">{profile?.name || 'Academic'}</span>
+                <span className="text-[10px] text-white/30 font-medium tracking-wider">{user.email}</span>
               </div>
-            </div>
+            </motion.div>
           </div>
         </header>
 
-        <div className="flex-1 flex overflow-hidden">
+        <div className="flex-1 flex overflow-hidden glass-panel border-white/5 min-h-0 bg-white/[0.01]">
           {renderContent()}
         </div>
       </main>

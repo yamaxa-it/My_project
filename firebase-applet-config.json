@@ -1,10 +1,10 @@
 {
-  "projectId": "gen-lang-client-0848770826",
-  "appId": "1:394641239113:web:1cfc0fe7a5750e2caf6398",
-  "apiKey": "AIzaSyDLP44UcEZ4c_EmitJDfMXn5iVs03E_thY",
-  "authDomain": "gen-lang-client-0848770826.firebaseapp.com",
-  "firestoreDatabaseId": "ai-studio-80e690d8-0b53-488c-ae20-ad8b7288dcb7",
-  "storageBucket": "gen-lang-client-0848770826.firebasestorage.app",
-  "messagingSenderId": "394641239113",
-  "measurementId": ""
+  "projectId": "lingu-glass-ai",
+  "appId": "1:110912308857:web:bdfbe5c0b16f23975776a8",
+  "apiKey": "AIzaSyAZjD_D8-qsLkVhm9xhxXjOt2_BeE4Bhks",
+  "authDomain": "lingu-glass-ai.firebaseapp.com",
+  "firestoreDatabaseId": "(default)",
+  "storageBucket": "lingu-glass-ai.firebasestorage.app",
+  "messagingSenderId": "110912308857",
+  "measurementId": "G-7RM64YDQCP"
 }

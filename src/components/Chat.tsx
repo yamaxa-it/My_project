@@ -148,16 +148,18 @@ export default function Chat({ userId, name, isFullScreen, lang }: ChatProps) {
             <div
               key={m.id}
               className={m.role === 'model' 
-                ? 'chat-bubble-ai p-3 md:p-5 text-xs md:text-sm leading-relaxed max-w-[95%] prose prose-invert prose-sm prose-p:my-0 prose-headings:my-1 prose-ul:my-1' 
-                : 'self-end bg-purple-600/20 border border-purple-500/30 p-2 md:p-4 rounded-xl md:rounded-2xl rounded-tr-none text-xs md:text-sm max-w-[85%] whitespace-pre-wrap'
+                ? 'chat-bubble-ai px-6 py-6 text-sm leading-relaxed max-w-[100%] prose prose-invert prose-p:my-1 prose-headings:my-2 prose-ul:my-2 bg-white/[0.03] border border-white/5 rounded-3xl' 
+                : 'self-end bg-purple-600 px-5 py-3 rounded-2xl rounded-tr-none text-sm max-w-[85%] whitespace-pre-wrap font-medium shadow-xl shadow-purple-500/10'
               }
             >
               {m.role === 'model' ? (
-                <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                  {m.content}
-                </ReactMarkdown>
+                <article className="font-serif-ish leading-loose text-white/90">
+                  <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                    {m.content}
+                  </ReactMarkdown>
+                </article>
               ) : (
-                <p>{m.content}</p>
+                <p className="text-white">{m.content}</p>
               )}
             </div>
           ))}
