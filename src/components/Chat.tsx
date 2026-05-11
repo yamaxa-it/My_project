@@ -108,12 +108,14 @@ export default function Chat({ userId, name, isFullScreen, lang }: ChatProps) {
 
     } catch (err: any) {
       console.error('Chat error:', err);
-      if (err.message?.includes('429')) {
+      const errorMessage = err.message || String(err);
+      
+      if (errorMessage.includes('429')) {
         setError("AI is temporarily busy (too many requests). Please wait a moment and try again.");
-      } else if (err.message?.includes('API key')) {
+      } else if (errorMessage.includes('API key')) {
         setError("AI API key is missing or invalid. Check your environment variables.");
       } else {
-        setError("Connection issue detected. The Professor is taking a short break. Please check your internet or try again later.");
+        setError(`Connection issue: ${errorMessage.substring(0, 100)}${errorMessage.length > 100 ? '...' : ''}. Please check if your Gemini API key is correct and not a Firebase key.`);
       }
     } finally {
       setIsLoading(false);
