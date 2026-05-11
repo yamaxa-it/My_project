@@ -1,13 +1,9 @@
 import { GoogleGenAI } from "@google/genai";
 
-const apiKey = (
-  (typeof process !== 'undefined' && process.env?.GEMINI_API_KEY) || 
-  (import.meta as any).env?.VITE_GEMINI_API_KEY || 
-  (import.meta as any).env?.GEMINI_API_KEY
-)?.trim();
+const apiKey = process.env.GEMINI_API_KEY;
 
 if (!apiKey && typeof window !== 'undefined') {
-  console.error("CRITICAL ERROR: GEMINI_API_KEY is missing! The AI will not respond. Please set GEMINI_API_KEY or VITE_GEMINI_API_KEY.");
+  console.error("CRITICAL ERROR: GEMINI_API_KEY is missing! The AI will not respond.");
 }
 
 const ai = new GoogleGenAI({ apiKey: apiKey || "" });
@@ -39,7 +35,7 @@ const SYSTEM_INSTRUCTION = `Ты — Профессор Лингвистики, 
 
 Начинай диалог с приветствия. Если в истории уже есть сообщения, не задавай вводные вопросы повторно, а продолжай обучение с того места, где остановились.`;
 
-const MODEL_NAME = "gemini-1.5-flash"; 
+const MODEL_NAME = "gemini-3-flash-preview"; 
 
 export const createTutorChat = (history: any[] = [], name?: string) => {
   const dynamicInstruction = name 

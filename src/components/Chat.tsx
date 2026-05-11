@@ -115,7 +115,7 @@ export default function Chat({ userId, name, isFullScreen, lang }: ChatProps) {
       } else if (errorMessage.includes('API key')) {
         setError("AI API key is missing or invalid. Check your environment variables.");
       } else {
-        setError(`Connection issue: ${errorMessage.substring(0, 100)}${errorMessage.length > 100 ? '...' : ''}. Please check if your Gemini API key is correct and not a Firebase key.`);
+        setError(`AI Service Error: ${errorMessage.substring(0, 150)}${errorMessage.length > 150 ? '...' : ''}. Tip: Ensure you are using a Gemini API key from Google AI Studio, not a general Firebase key, and that the Generative Language API is enabled.`);
       }
     } finally {
       setIsLoading(false);
